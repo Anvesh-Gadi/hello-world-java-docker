@@ -1,0 +1,46 @@
+pipeline:
+  name: java-dockerimg-gcr
+  identifier: javadockerimggcr
+  projectIdentifier: ContinuousIntegration
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: anveshgit
+        repoName: hello-world-java-docker
+        build: <+input>
+  stages:
+    - stage:
+        name: build and psuh
+        identifier: build_and_psuh
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Run_1
+                  identifier: Run_1
+                  spec:
+                    shell: Sh
+                    command: mvn clean install
+              - step:
+                  type: BuildAndPushGCR
+                  name: BuildAndPushGCR_1
+                  identifier: BuildAndPushGCR_1
+                  spec:
+                    connectorRef: anveshgcpconnection
+                    host: us.gcr.io
+                    projectID: centered-loader-422210-p3
+                    imageName: anvesh_img
+                    tags:
+                      - v1
